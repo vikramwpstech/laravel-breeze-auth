@@ -1,57 +1,48 @@
-<x-admin-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('admin.layouts.guest')
+@section('content')
+    <h4>Hello! let's get started</h4>
+    <h6 class="fw-light">Sign in to continue.</h6>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+    <!-- Session Status -->
+    @if(session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <h2 class="text-4x1 font-bold text-center">Admin Login</h2>
-        <form method="POST" action="{{ route('admin.login') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+    <!-- Validation Errors -->
+    @if($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger">
+                {{ $error }}
             </div>
+        @endforeach
+    @endif
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-            </div>
-
-            <!-- Remember Me -->
-            <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="remember">
-                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+    <form method="POST" action="{{ route('admin.login') }}">
+        @csrf
+        <div class="form-group">
+            <label for="email" >{{ __('Email') }}</label>
+            <input type="email" class="form-control form-control-lg" id="email" name="email" value="{{old('email')}}" required autofocus placeholder="Enter your email here">
+        </div>
+        <div class="form-group">
+            <label for="password">{{ __('Password') }}</label>
+            <input type="password" class="form-control form-control-lg" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password here">
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">{{ __('Log in') }}</button>
+        </div>
+        <div class="my-2 d-flex justify-content-between align-items-center">
+            <div class="form-check">
+                <label class="form-check-label text-muted">
+                    <input type="checkbox" id="remember_me" class="form-check-input" name="remember">
+                    {{ __('Remember me') }}
                 </label>
             </div>
-
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('admin.password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
-
-                <x-button class="ml-3">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-admin-guest-layout>
+            @if (Route::has('password.request'))
+                <a href="{{ route('admin.password.request') }}" class="auth-link text-black">{{ __('Forgot your password?') }}</a>
+            @endif
+        </div>
+    </form>
+@endsection

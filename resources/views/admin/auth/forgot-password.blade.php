@@ -1,37 +1,37 @@
-<x-admin-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('admin.layouts.guest')
+@section('content')
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-4 text-sm text-gray-600">
+        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    </div>
+
+    <h2 class="text-4x1 font-bold text-center">Admin Forgot Password</h2>
+
+    <!-- Session Status -->
+    @if(session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
         </div>
+    @endif
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <h2 class="text-4x1 font-bold text-center">Admin Forgot Password</h2>
-        <form method="POST" action="{{ route('admin.password.email') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+    <!-- Validation Errors -->
+    @if($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger">
+                {{ $error }}
             </div>
+        @endforeach
+    @endif
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-admin-guest-layout>
+    <form method="POST" action="{{ route('admin.password.email') }}">
+        @csrf
+        <div class="form-group">
+            <label for="email" >{{ __('Email') }}</label>
+            <input type="email" class="form-control form-control-lg" id="email" name="email" value="{{old('email')}}" required autofocus placeholder="Enter your email here">
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">{{ __('Email Password Reset Link') }}</button>
+        </div>
+    </form>
+@endsection
